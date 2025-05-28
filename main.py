@@ -17,10 +17,13 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        if(len(value)==10):
-            super().__init__(value)
-        else:
-             raise PhoneError("Length phone not 10")
+        try:
+            if len(value)==10 and int(value):
+                super().__init__(value)
+            else:
+                raise PhoneError("Length phone not 10")
+        except ValueError:
+            raise ValueError
     
 
 class Record:
@@ -35,12 +38,13 @@ class Record:
         self.phones = [phones for phones in self.phones if phones.value != phone]
 
     def edit_phone(self,old_phone,new_phone):
-        for phone in self.phones:
-            if phone.value == old_phone:
-                phone.value = new_phone
-                break
-        else:
-            raise ValueError
+        if Phone(new_phone):
+            for phone in self.phones:
+                if phone.value == old_phone:
+                    phone.value = new_phone
+                    break
+            else:
+                raise ValueError
 
     def find_phone(self,phone):
         for phone_find in self.phones:
@@ -57,7 +61,7 @@ class AddressBook(UserDict):
         self.data[record.name.value] = record
 
     def find(self,name):
-        return self.data[name] if name in self.data.keys() else None
+        return self.data.get(name)
     
     def delete(self,name):
         self.data.pop(name)
