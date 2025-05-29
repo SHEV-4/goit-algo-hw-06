@@ -17,13 +17,10 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        try:
-            if len(value)==10 and int(value):
-                super().__init__(value)
-            else:
-                raise PhoneError("Length phone not 10")
-        except ValueError:
-            raise ValueError
+        if len(value)==10 and value.isdigit():
+            super().init(value)
+        else:
+            raise PhoneError("The phone number is of incorrect length or contains non-numeric characters.")
     
 
 class Record:
